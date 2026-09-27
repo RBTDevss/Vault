@@ -47,7 +47,7 @@ compatible no matter which one you use:
 
 | Frontend | Location | Notes |
 |---|---|---|
-| C# WPF desktop app (recommended) | `VaultApp/` | Dark UI, drives the Python core through `vault_bridge.py` |
+| C# WPF desktop app (recommended) | `VaultApp/` | the UI, drives the Python core through `vault_bridge.py` |
 | Python + CustomTkinter | `vault_gui.py` | Dark card-based UI, same core |
 | Python + Tkinter (legacy) | `vault.py` | Original single-file app, includes `--selftest` |
 
