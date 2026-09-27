@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon></ApplicationIcon>
+    <AssemblyName>Vault</AssemblyName>
+    <RootNamespace>VaultApp</RootNamespace>
+    <Version>2.0.0</Version>
+    <Description>Vault — Encrypted database (C# frontend + Python core)</Description>
+  </PropertyGroup>
+
+  <!-- Backend Python accanto all'eseguibile -->
+  <ItemGroup>
+    <None Include="..\secure_vault.py" Link="secure_vault.py" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\vault_bridge.py" Link="vault_bridge.py" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,4 @@
+pycryptodomex>=3.20.0
+customtkinter>=5.2.0
+# Optional but RECOMMENDED (Argon2id KDF instead of scrypt):
+argon2-cffi>=23.0.0

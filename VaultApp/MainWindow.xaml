@@ -1,0 +1,254 @@
+﻿<Window x:Class="VaultApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Vault — Encrypted Database" Height="740" Width="1180"
+        MinHeight="620" MinWidth="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BgBrush}" Foreground="#E8EAED" FontFamily="Segoe UI">
+    <Grid>
+        <!-- ================= LOGIN ================= -->
+        <Grid x:Name="LoginView" Visibility="Visible">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <Border Width="600" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Background="{StaticResource CardBrush}" CornerRadius="16" Padding="36,30" Margin="0,30">
+                    <StackPanel>
+                        <TextBlock Text="Vault" FontSize="28" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Encrypted database on your disk  •  AES-256-GCM  •  Memory-hard KDF"
+                                   Foreground="{StaticResource MutedBrush}" HorizontalAlignment="Center" Margin="0,4,0,0" TextWrapping="Wrap" TextAlignment="Center"/>
+                        <TextBlock Text="Names, groups and contents are unreadable without the password."
+                                   Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Center" Margin="0,2,0,18"/>
+
+                        <TextBlock Text="Vault folder" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="VaultPathBox" Grid.Column="0" Margin="0,0,8,0"/>
+                            <Button Grid.Column="1" Content="Browse…" Width="110" Height="38"
+                                    Click="BrowseVault_Click" Style="{StaticResource PrimaryButton}"/>
+                        </Grid>
+
+                        <TextBlock Text="Password" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <PasswordBox x:Name="PasswordBox" Grid.Column="0" Height="40"
+                                         PasswordChanged="PasswordBox_PasswordChanged" KeyDown="PasswordBox_KeyDown"/>
+                            <TextBox x:Name="PasswordVisibleBox" Grid.Column="0" Height="40" Visibility="Collapsed"
+                                     TextChanged="PasswordVisibleBox_TextChanged" KeyDown="PasswordBox_KeyDown"/>
+                            <Button x:Name="ShowPasswordButton" Grid.Column="1" Content="Show" Width="90" Height="40"
+                                    Margin="10,0,0,0" VerticalAlignment="Center"
+                                    Click="ShowPasswordButton_Click" Style="{StaticResource GhostButton}"/>
+                        </Grid>
+                        <Grid Margin="0,8,0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ProgressBar x:Name="StrengthBar" Minimum="0" Maximum="100" Value="0"/>
+                            <TextBlock x:Name="StrengthLabel" Grid.Column="1" Foreground="{StaticResource MutedBrush}"
+                                       FontSize="12" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                        </Grid>
+                        <TextBlock x:Name="KdfInfoLabel" Foreground="{StaticResource MutedBrush}"
+                                   FontSize="11" Margin="0,4,0,0" Text="KDF: …"/>
+
+                        <Grid Margin="0,18,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Content="Open vault" Height="44" FontSize="15"
+                                    Margin="0,0,6,0" Click="OpenVault_Click" Style="{StaticResource PrimaryButton}"/>
+                            <Button Grid.Column="1" Content="Create new" Height="44" FontSize="15"
+                                    Margin="6,0,0,0" Click="CreateVault_Click" Style="{StaticResource GhostButton}"/>
+                        </Grid>
+                        <TextBlock Text="Without the password your data is UNRECOVERABLE — there is no backdoor."
+                                   Foreground="{StaticResource MutedBrush}" FontSize="11"
+                                   HorizontalAlignment="Center" Margin="0,14,0,0" TextWrapping="Wrap" TextAlignment="Center"/>
+                        <TextBlock x:Name="LoginStatus" Foreground="#E67E22" FontSize="12"
+                                   HorizontalAlignment="Center" Margin="0,8,0,0" TextWrapping="Wrap" TextAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </ScrollViewer>
+        </Grid>
+
+        <!-- ================= MAIN ================= -->
+        <Grid x:Name="MainView" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="264"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Sidebar -->
+            <Border Grid.Column="0" Background="{StaticResource SidebarBrush}" CornerRadius="0">
+                <DockPanel Margin="14">
+                    <TextBlock Text="Vault" FontSize="18" FontWeight="Bold" DockPanel.Dock="Top"/>
+                    <TextBlock x:Name="VaultPathLabel" Foreground="{StaticResource MutedBrush}"
+                               FontSize="11" TextWrapping="Wrap" Margin="0,2,0,0" DockPanel.Dock="Top"/>
+                    <TextBlock x:Name="LockStateLabel" Text="Unlocked" Foreground="#2ECC71"
+                               FontWeight="Bold" FontSize="12" Margin="0,4,0,0" DockPanel.Dock="Top"/>
+
+                    <StackPanel DockPanel.Dock="Bottom" Margin="0,8,0,0">
+                        <TextBlock x:Name="StatsLabel" Foreground="{StaticResource MutedBrush}"
+                                   FontSize="12" TextWrapping="Wrap" Margin="0,0,0,4"/>
+                        <TextBlock x:Name="AutolockLabel" Foreground="{StaticResource MutedBrush}"
+                                   FontSize="11" Margin="0,0,0,8"/>
+                        <Button Content="Change password" Margin="0,0,0,6" Height="36"
+                                Click="ChangePassword_Click" Style="{StaticResource GhostButton}"/>
+                        <Button Content="Lock vault" Height="36"
+                                Click="LockVault_Click" Style="{StaticResource DangerButton}"/>
+                    </StackPanel>
+
+                    <TextBlock Text="GROUPS" Foreground="{StaticResource MutedBrush}"
+                               FontSize="12" FontWeight="Bold" Margin="0,14,0,6" DockPanel.Dock="Top"/>
+                    <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto" Margin="0,0,0,8">
+                        <StackPanel x:Name="GroupsPanel"/>
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+
+            <!-- Content -->
+            <Grid Grid.Column="1" Margin="16,12,16,10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Top bar -->
+                <Grid Grid.Row="0" Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="SearchBox" Grid.Column="0" Height="38" Margin="0,0,8,0"
+                             TextChanged="SearchBox_TextChanged"/>
+                    <ComboBox x:Name="SortBox" Grid.Column="1" Height="38" Margin="0,0,8,0"
+                              SelectionChanged="SortBox_SelectionChanged">
+                        <ComboBoxItem Content="Name A→Z" IsSelected="True"/>
+                        <ComboBoxItem Content="Recent"/>
+                        <ComboBoxItem Content="Largest"/>
+                        <ComboBoxItem Content="Group"/>
+                    </ComboBox>
+                    <Button Grid.Column="2" Content="+ File" Height="38" Padding="16,0"
+                            Margin="0,0,6,0" Click="AddFiles_Click" Style="{StaticResource PrimaryButton}"/>
+                    <Button Grid.Column="3" Content="+ Folder" Height="38" Padding="16,0"
+                            Click="AddFolder_Click" Style="{StaticResource GhostButton}"/>
+                </Grid>
+
+                <!-- Action bar -->
+                <Border Grid.Row="1" Background="{StaticResource CardBrush}" CornerRadius="10"
+                        Padding="12,8" Margin="0,0,0,10">
+                    <DockPanel>
+                        <TextBlock x:Name="SelectionLabel" Foreground="{StaticResource MutedBrush}"
+                                   VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right">
+                            <Button Content="Extract" Padding="16,6" Margin="0,0,6,0"
+                                    Click="Extract_Click" Style="{StaticResource PrimaryButton}"/>
+                            <Button Content="Extract all" Padding="12,6" Margin="0,0,6,0"
+                                    Click="ExtractAll_Click" Style="{StaticResource GhostButton}"/>
+                            <Button Content="Delete" Padding="12,6" Margin="0,0,6,0"
+                                    Click="Delete_Click" Style="{StaticResource GhostButton}" ToolTip="Delete with shredding"/>
+                            <Button Content="Group" Padding="12,6" Margin="0,0,6,0"
+                                    Click="MoveGroup_Click" Style="{StaticResource GhostButton}"/>
+                            <Button Content="Select all" Padding="12,6"
+                                    Click="SelectAll_Click" Style="{StaticResource GhostButton}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <!-- File list -->
+                <Border Grid.Row="2" Background="{StaticResource CardBrush}" CornerRadius="12" Padding="6">
+                    <Grid>
+                        <DataGrid x:Name="FilesGrid" AutoGenerateColumns="False"
+                                  Background="Transparent" Foreground="#E8EAED"
+                                  BorderThickness="0" GridLinesVisibility="None"
+                                  HeadersVisibility="Column" RowHeaderWidth="0"
+                                  SelectionMode="Extended" SelectionUnit="FullRow"
+                                  CanUserAddRows="False" CanUserDeleteRows="False"
+                                  CanUserReorderColumns="False" IsReadOnly="True"
+                                  RowHeight="52" FontSize="13"
+                                  SelectionChanged="FilesGrid_SelectionChanged"
+                                  MouseDoubleClick="FilesGrid_DoubleClick">
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Foreground" Value="#9AA0A8"/>
+                                    <Setter Property="FontSize" Value="12"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="Padding" Value="8,8"/>
+                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                    <Setter Property="BorderBrush" Value="#2E333E"/>
+                                </Style>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Foreground" Value="#E8EAED"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Padding" Value="4"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#262B34"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#2E4A62"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Padding" Value="8,4"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="DataGridCell">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </DataGrid.Resources>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="File name" Binding="{Binding Name}" Width="*"/>
+                                <DataGridTextColumn Header="Group" Binding="{Binding GroupDisplay}" Width="180"/>
+                                <DataGridTextColumn Header="Size" Binding="{Binding SizeDisplay}" Width="110">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Imported on" Binding="{Binding DateDisplay}" Width="150"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Border x:Name="EmptyState" Background="Transparent" Visibility="Collapsed"
+                                HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock x:Name="EmptyStateText" Foreground="{StaticResource MutedBrush}"
+                                       FontSize="15" TextAlignment="Center" TextWrapping="Wrap" MaxWidth="420"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Status -->
+                <Grid Grid.Row="3" Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="240"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock x:Name="StatusLabel" Grid.Column="0" Foreground="{StaticResource MutedBrush}"
+                               FontSize="12" VerticalAlignment="Center" TextWrapping="Wrap" Text="Ready."/>
+                    <ProgressBar x:Name="MainProgress" Grid.Column="1" Minimum="0" Maximum="1000" Value="0"/>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

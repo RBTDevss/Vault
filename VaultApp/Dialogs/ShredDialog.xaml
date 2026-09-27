@@ -1,0 +1,28 @@
+<Window x:Class="VaultApp.Dialogs.ShredDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Original files" Height="280" Width="480"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="#16181D" Foreground="#E8EAED" FontFamily="Segoe UI">
+    <Border Margin="20" Background="#1E2128" CornerRadius="14" Padding="24">
+        <StackPanel>
+            <TextBlock Text="What should happen to the originals?" FontSize="17" FontWeight="Bold"/>
+            <TextBlock Margin="0,8,0,16" Foreground="#9AA0A8" TextWrapping="Wrap">
+                The files were copied INTO the vault in encrypted form.
+                The plaintext originals stay on disk unless you destroy them with secure shredding.
+            </TextBlock>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="No, keep them" Height="40" Margin="0,0,6,0"
+                        Click="No_Click" Style="{StaticResource GhostButton}"/>
+                <Button Grid.Column="1" Content="Yes, destroy them" Height="40" Margin="6,0,0,0"
+                        Click="Yes_Click" Style="{StaticResource DangerButton}"/>
+            </Grid>
+            <Button Content="Cancel import" Margin="0,10,0,0" Foreground="#9AA0A8"
+                    Background="Transparent" BorderThickness="0" Click="Cancel_Click" Cursor="Hand"/>
+        </StackPanel>
+    </Border>
+</Window>

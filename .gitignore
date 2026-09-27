@@ -1,0 +1,24 @@
+# .NET build outputs
+bin/
+obj/
+.vs/
+*.user
+*.suo
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+
+# Vault runtime leftovers (user data, never commit vaults)
+*.tmp-*
+*.del
+*.bak
+
+# OS / editors
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
