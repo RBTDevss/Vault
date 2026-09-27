@@ -16,7 +16,7 @@
 
   <!-- Backend Python accanto all'eseguibile -->
   <ItemGroup>
-    <None Include="..\secure_vault.py" Link="secure_vault.py" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\vault.py" Link="vault.py" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\vault_bridge.py" Link="vault_bridge.py" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 

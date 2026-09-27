@@ -42,14 +42,14 @@ lost data.
 
 ## Frontends
 
-All frontends share the same proven core in `secure_vault.py`, so vaults are
+All frontends share the same proven core in `vault.py`, so vaults are
 compatible no matter which one you use:
 
 | Frontend | Location | Notes |
 |---|---|---|
-| C# WPF desktop app (recommended) | `VaultApp/` | Modern dark UI, drives the Python core through `vault_bridge.py` |
-| Python + CustomTkinter | `vault_gui_modern.py` | Dark card-based UI, same core |
-| Python + Tkinter (legacy) | `secure_vault.py` | Original single-file app, includes `--selftest` |
+| C# WPF desktop app (recommended) | `VaultApp/` | Dark UI, drives the Python core through `vault_bridge.py` |
+| Python + CustomTkinter | `vault_gui.py` | Dark card-based UI, same core |
+| Python + Tkinter (legacy) | `vault.py` | Original single-file app, includes `--selftest` |
 
 ## Quick start
 
@@ -64,14 +64,14 @@ dotnet run -c Release
 
 ```powershell
 pip install -r requirements.txt
-python secure_vault.py
-# or: python vault_gui_modern.py
+python vault.py
+# or: python vault_gui.py
 ```
 
 **Self-test** (crypto verification, tamper, wrong password, shredding):
 
 ```powershell
-python secure_vault.py --selftest
+python vault.py --selftest
 ```
 
 ## How to use
@@ -102,9 +102,9 @@ fragments — press **Lock** when finished.
 ## Project layout
 
 ```
-secure_vault.py       # proven core (Vault) + legacy GUI + --selftest
+vault.py       # proven core (Vault) + legacy GUI + --selftest
 vault_bridge.py       # JSON-line IPC server over stdio (used by the C# app)
-vault_gui_modern.py   # CustomTkinter GUI (same core)
+vault_gui.py   # CustomTkinter GUI (same core)
 VaultApp/             # C# WPF frontend (.NET 8, no crypto reimplementation)
 requirements.txt      # Python dependencies
 Vault.spec          # PyInstaller spec for the legacy GUI
@@ -119,7 +119,7 @@ dotnet publish -c Release -r win-x64 --self-contained true `
   -o bin/publish-vault
 ```
 
-`secure_vault.py` and `vault_bridge.py` are copied next to the exe
+`vault.py` and `vault_bridge.py` are copied next to the exe
 automatically and are required at runtime, together with a Python
 installation (`pip install pycryptodomex`, `argon2-cffi` recommended).
 

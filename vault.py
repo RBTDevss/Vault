@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-PRIVATE VAULT — Encrypted on-disk database (AES-256-GCM + Scrypt/Argon2id)
+VAULT — Encrypted on-disk database (AES-256-GCM + Scrypt/Argon2id)
 ==============================================================================
 Single-file program with a Tkinter GUI.
 
@@ -42,8 +42,8 @@ Security (forensic level — best effort on stock OS):
 
 Dependencies:  pycryptodomex (or pycryptodome)  —  pip install -r requirements.txt
               argon2-cffi (optional, recommended) — Argon2id is used when present.
-Run:  python secure_vault.py
-Quick test: python secure_vault.py --selftest
+Run:  python vault.py
+Quick test: python vault.py --selftest
 """
 
 import base64

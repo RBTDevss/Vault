@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Vault — modern GUI (CustomTkinter).
+Vault — GUI (CustomTkinter).
 =========================================
-Modern frontend for the proven backend in `secure_vault.py`.
+Frontend for the proven backend in `vault.py`.
 
 - No crypto reimplementation: imports Vault/VaultError and reuses everything
   (AES-256-GCM, Argon2id/scrypt, shredding, atomic manifest, selftest).
 - Only the UI is new: dark, rounded, sidebar + cards, guided dialogs.
 
-Run:  python vault_gui_modern.py
+Run:  python vault_gui.py
 Needs: customtkinter + pycryptodomex (+ argon2-cffi recommended)
 """
 
@@ -23,7 +23,7 @@ import traceback
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
 
-from secure_vault import (
+from vault import (
     Vault,
     VaultError,
     password_strength,
@@ -232,7 +232,7 @@ def confirm_delete_dialog(parent, n: int, preview: str) -> bool:
 # ---------------------------------------------------------------------------
 # App
 # ---------------------------------------------------------------------------
-class ModernVaultApp:
+class VaultApp:
     def __init__(self):
         self.root = ctk.CTk()
         self.root.title(APP_TITLE + " — Encrypted Database")
@@ -1124,7 +1124,7 @@ class ModernVaultApp:
                 out = []
                 done = [0]
                 for i in ids_copy:
-                    from secure_vault import validate_file_id as _v
+                    from vault import validate_file_id as _v
                     _v(i)
                     e = v.get_entry(i)
                     d = os.path.join(destdir, Vault.sanitize_component(e["name"]))
@@ -1188,7 +1188,7 @@ class ModernVaultApp:
         ids_copy = list(ids)
 
         def job(progress_cb):
-            from secure_vault import validate_file_id as _v
+            from vault import validate_file_id as _v
             n = len(ids_copy)
             for k, i in enumerate(ids_copy):
                 _v(i)
@@ -1255,7 +1255,7 @@ class ModernVaultApp:
 
 
 def main():
-    app = ModernVaultApp()
+    app = VaultApp()
     app.run()
 
 

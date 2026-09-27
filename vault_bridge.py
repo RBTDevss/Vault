@@ -3,7 +3,7 @@
 """
 vault_bridge.py — JSON-line IPC server for the C# frontend.
 ==========================================================
-Reuses the proven secure_vault.py core (no crypto reimplementation).
+Reuses the proven vault.py core (no crypto reimplementation).
 The C# process starts it and talks over stdin/stdout with newline-delimited
 JSON objects.
 
@@ -26,7 +26,7 @@ import traceback
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from secure_vault import (
+from vault import (
     Vault,
     VaultError,
     password_strength as _pw_strength,

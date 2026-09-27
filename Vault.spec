@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['secure_vault.py'],
+    ['vault.py'],
     pathex=[],
     binaries=[],
     datas=[],

@@ -121,14 +121,14 @@ public sealed class VaultBridgeClient : IDisposable
                 if (File.Exists(full))
                 {
                     dir = Path.GetDirectoryName(full)!;
-                    if (!File.Exists(Path.Combine(dir, "secure_vault.py")))
+                    if (!File.Exists(Path.Combine(dir, "vault.py")))
                     {
                         foreach (var c2 in candidates)
                         {
                             var d2 = Path.GetDirectoryName(Path.GetFullPath(c2));
-                            if (d2 != null && File.Exists(Path.Combine(d2, "secure_vault.py")))
+                            if (d2 != null && File.Exists(Path.Combine(d2, "vault.py")))
                             {
-                                CopyIfNewer(Path.Combine(d2, "secure_vault.py"), Path.Combine(dir, "secure_vault.py"));
+                                CopyIfNewer(Path.Combine(d2, "vault.py"), Path.Combine(dir, "vault.py"));
                                 break;
                             }
                         }
@@ -139,7 +139,7 @@ public sealed class VaultBridgeClient : IDisposable
             catch { }
         }
         throw new FileNotFoundException(
-            "vault_bridge.py not found. Copy secure_vault.py + vault_bridge.py next to the executable.");
+            "vault_bridge.py not found. Copy vault.py + vault_bridge.py next to the executable.");
     }
 
     private static void CopyIfNewer(string src, string dst)
