@@ -86,7 +86,7 @@ python vault.py --selftest
 When asked whether to destroy the originals, answer **Yes** if you want the
 plaintext files shredded after import.
 
-## Security model (honest summary)
+## Security model
 
 - Encryption: AES-256-GCM, unique nonces (random base + counter), per-chunk authentication.
 - Keys: 256-bit CSPRNG master key + unique file keys; password only feeds the KDF.
